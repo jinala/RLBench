@@ -61,6 +61,18 @@ class MountainCarTrainEnv(Continuous_MountainCarEnv):
 		self.state = np.array([position, velocity, power])
 		return self.state[0:2], reward, done, {}
 
+	def get_safe_error(self):
+		return 0.0
+
+	def get_goal_error(self):
+		position = self.state[0]
+		if position < self.goal_position:
+			return self.goal_position - position 
+		return 0.0
+
+	def get_dt(self):
+		return 1.0
+
 	def reset(self):
 		power = self.np_random.uniform(low = self.min_power, high = self.max_power)
 		self.state = np.array([self.np_random.uniform(low=-0.6-0.4, high=-0.6+0.4), 0, power])

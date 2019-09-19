@@ -56,6 +56,24 @@ class PendulumTrainEnv(PendulumEnv):
 		self.last_u = None
 		return self._get_obs()
 
+	def get_safe_error(self):
+		return 0.0
+
+	def get_goal_error(self):
+		theta, thetadot, mass = self.state
+		if theta > np.pi:
+			theta = theta - 2.0*np.pi
+		th_err = 0.0
+		if theta > 0.05:
+			th_err = theta - 0.05
+		if theta < -0.05:
+			th_err = -0.05 - theta 
+
+		return th_err 
+
+	def get_dt(self):
+		return self.dt
+
 	def _get_obs(self):
 		theta, thetadot, mass = self.state
 		return np.array([np.cos(theta), np.sin(theta), thetadot])

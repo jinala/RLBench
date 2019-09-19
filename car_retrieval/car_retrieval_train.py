@@ -26,7 +26,7 @@ class CarRetrievalTrainEnv(gym.Env):
 		self.x_min = -5.0
 		self.x_max = 2.5
 		self.goal_ang = np.pi/2.0
-		self.dt = 0.1
+		self.tau = 0.1
 
 		self.low_state = np.array([self.x_min, 0.0, 0.0, -50.0, -50.0, self.x_min, 0.0, 0.0, -50.0, -50.0])
 		self.high_state = np.array([self.x_max, 30.0, np.pi, 50.0, 50.0, self.x_max, 30.0, np.pi, 50.0, 50.0])
@@ -48,7 +48,7 @@ class CarRetrievalTrainEnv(gym.Env):
 		return [seed]
 
 	def step(self, action):
-		dt = self.dt
+		tau = self.tau
 		old_obs = self._obs()
 		action = np.clip(action, self.low_action, self.high_action)
 		v,w = action 
@@ -56,9 +56,9 @@ class CarRetrievalTrainEnv(gym.Env):
 
 		x,y,ang, dist = self.state   
 		beta = np.arctan(0.5*np.tan(w))
-		dx = v*np.cos(ang + beta)*dt 
-		dy = v*np.sin(ang + beta)*dt 
-		da = v/(self.height/2.0)*np.sin(beta)*dt 
+		dx = v*np.cos(ang + beta)*tau 
+		dy = v*np.sin(ang + beta)*tau 
+		da = v/(self.height/2.0)*np.sin(beta)*tau 
 
 		x = x + dx 
 		y = y + dy 
@@ -166,6 +166,27 @@ class CarRetrievalTrainEnv(gym.Env):
 		
 		# error for ang
 		return abs(ang - self.goal_ang)*5.0;
+
+
+	def get_safe_error(self):
+		e1 = self._check_collision()
+		e2 = self._check_boundaries()
+
+		return e1 + e2 
+
+	def get_goal_error(self):
+		x,y,ang, dist = self.state
+		error = 0
+		# error for x
+		if (x > self.x_lane_2 - self.width):
+			error += x - self.x_lane_2 + self.width ;
+
+		if (abs(ang - self.goal_ang) > 0.05):
+			error += (abs(ang - self.goal_ang) - 0.05)*5.0
+		return error 
+
+	def get_dt(self):
+		return self.tau
 
 
 	def render(self, mode='human'):

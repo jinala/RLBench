@@ -84,3 +84,20 @@ class CartPoleTrainEnv(CartPoleEnv):
 
 		return np.array(self.state), reward, done, {}
 
+	def get_safe_error(self):
+		x, x_dot, theta, theta_dot = self.state
+		err = 0.0
+		if theta < -self.theta_threshold_radians:
+			err += -self.theta_threshold_radians - theta 
+		if theta > self.theta_threshold_radians:
+			err += theta - self.theta_threshold_radians
+
+		return err 
+
+	def get_goal_error(self):
+		return 0.0
+
+	def get_dt(self):
+		return self.tau
+
+

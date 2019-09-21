@@ -23,6 +23,7 @@ class AcrobotTrainEnv(AcrobotEnv):
 		self.action_space = spaces.Box(low=self.min_action, high=self.max_action,
 									   shape=(1,), dtype=np.float32)
 		self.state = None
+		self.goal_err = 0
 		self.seed()
 
 	
@@ -57,6 +58,7 @@ class AcrobotTrainEnv(AcrobotEnv):
 		self.state = ns
 		terminal = self._terminal()
 		reward = -1. if not terminal else 0.
+		self.goal_err = self._goal_error()
 		return (self._get_ob(), reward, terminal, {})
 
 	def _get_ob(self):
@@ -71,6 +73,9 @@ class AcrobotTrainEnv(AcrobotEnv):
 		return 0.0
 
 	def get_goal_error(self):
+		return self.goal_err 
+		
+	def _goal_error(self):
 		s = self.state
 		h = -np.cos(s[0]) - np.cos(s[1] + s[0])
 		if h < 1.0:

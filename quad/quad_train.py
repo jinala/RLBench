@@ -46,6 +46,8 @@ class QuadTrainEnv(gym.Env):
 		self.observation_space = spaces.Box(low=self.low_state, high=self.high_state,
 											dtype=np.float32)
 
+		self.goal_err = 0
+
 		self.seed()
 		self.reset()
 
@@ -76,6 +78,7 @@ class QuadTrainEnv(gym.Env):
 
 		done = self._done()
 		obs = self._obs()
+		self.goal_err = self._goal_error()
 		return obs, self._reward(), done, {}
 
 	def reset(self):
@@ -241,6 +244,9 @@ class QuadTrainEnv(gym.Env):
 		return e1 + e2 
 
 	def get_goal_error(self):
+		return self.goal_err
+		
+	def _goal_error(self):
 		return self._check_goal()
 
 

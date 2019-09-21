@@ -20,7 +20,7 @@ class CarRetrievalTestEnv(CarRetrievalTrainEnv):
 		self.x_min = -5.0
 		self.x_max = 2.5
 		self.goal_ang = np.pi/2.0
-		self.dt = 0.1
+		self.tau = 0.1
 
 		self.low_state = np.array([self.x_min, 0.0, 0.0, -50.0, -50.0, self.x_min, 0.0, 0.0, -50.0, -50.0])
 		self.high_state = np.array([self.x_max, 30.0, np.pi, 50.0, 50.0, self.x_max, 30.0, np.pi, 50.0, 50.0])

@@ -53,8 +53,8 @@ class PendulumTrainEnv(PendulumEnv):
 		return self._get_obs(), -costs, terminal, {}
 
 	def reset(self):
-		low = np.array([-np.pi, -1., self.min_mass])
-		high = np.array([np.pi, 1., self.max_mass])
+		low = np.array([np.pi - 0.04, -0.04, self.min_mass])
+		high = np.array([np.pi + 0.04, 0.04, self.max_mass])
 		self.state = self.np_random.uniform(low=low, high=high)
 		self.last_u = None
 		return self._get_obs()

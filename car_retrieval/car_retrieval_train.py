@@ -74,8 +74,10 @@ class CarRetrievalTrainEnv(gym.Env):
 		obs = np.concatenate((obs, old_obs), axis = None)
 
 		self.goal_err = self._goal_error()
+		reward = self._reward()
+		
 
-		return obs, self._reward(), done, {}
+		return obs, reward, done, {}
 
 	def reset(self):
 		x = self.x_lane_2 + self.np_random.uniform(low = -0.04, high = 0.04)
@@ -113,7 +115,7 @@ class CarRetrievalTrainEnv(gym.Env):
 
 		e3 = self._check_goal()
 
-		if e1 + e2 > 0.01:
+		if e1 + e2 > 0.02:
 			return -e3 - 10.0
 		else:
 			return -e3
@@ -163,13 +165,15 @@ class CarRetrievalTrainEnv(gym.Env):
 		# unpack
 		x,y,ang, dist = self.state
 
+		error = 0.0
 		# error for x
 		if (x > self.x_lane_2 - self.width):
-			return x - self.x_lane_2 + self.width + 0.1;
+			error += x - self.x_lane_2 + self.width + 0.1;
 
 		
 		# error for ang
-		return abs(ang - self.goal_ang)*5.0;
+		error += abs(ang - self.goal_ang)
+		return error 
 
 
 	def get_safe_error(self):
@@ -209,7 +213,7 @@ class CarRetrievalTrainEnv(gym.Env):
 		dist = dist * scale
 		w_car = self.width * scale
 		h_car = self.height * scale
-		dt = self.dt
+		dt = self.tau
 		
 		if self.viewer is None:
 			

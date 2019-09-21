@@ -55,9 +55,11 @@ class MountainCarTrainEnv(Continuous_MountainCarEnv):
 		done = bool(position >= self.goal_position)
 
 		reward = 0
+		if position < self.goal_position:
+			reward += -(self.goal_position - position)
 		if done:
-			reward = 100.0
-		reward-= math.pow(action[0],2)*0.1
+			reward += 100.0
+		#reward-= math.pow(action[0],2)*0.1
 
 		self.state = np.array([position, velocity, power])
 		self.goal_err = self._goal_error()

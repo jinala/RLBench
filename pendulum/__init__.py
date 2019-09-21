@@ -3,7 +3,7 @@ from gym.envs.registration import register
 register(
 	id="PendulumTrain-v0",
 	entry_point="pendulum.pendulum_train:PendulumTrainEnv",
-	max_episode_steps=300,
+	max_episode_steps=200,
 )
 
 

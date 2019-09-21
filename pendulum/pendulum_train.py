@@ -22,6 +22,8 @@ class PendulumTrainEnv(PendulumEnv):
 		self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,), dtype=np.float32)
 		self.observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
 
+		self.goal_err = 0.0
+
 		self.seed()
 
 	def seed(self, seed=None):
@@ -47,6 +49,7 @@ class PendulumTrainEnv(PendulumEnv):
 		terminal = self._terminal()
 	   
 		self.state = np.array([newth, newthdot, mass])
+		self.goal_err = self._goal_error()
 		return self._get_obs(), -costs, terminal, {}
 
 	def reset(self):
@@ -60,9 +63,11 @@ class PendulumTrainEnv(PendulumEnv):
 		return 0.0
 
 	def get_goal_error(self):
+		return self.goal_err
+
+	def _goal_error(self):
 		theta, thetadot, mass = self.state
-		if theta > np.pi:
-			theta = theta - 2.0*np.pi
+		theta = angle_normalize(theta)
 		th_err = 0.0
 		if theta > 0.05:
 			th_err = theta - 0.05

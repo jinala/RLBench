@@ -31,6 +31,7 @@ class MountainCarTrainEnv(Continuous_MountainCarEnv):
 									   shape=(1,), dtype=np.float32)
 		self.observation_space = spaces.Box(low=self.low_state, high=self.high_state,
 											dtype=np.float32)
+		self.goal_err = 0.0
 
 		self.seed()
 		self.reset()
@@ -59,12 +60,16 @@ class MountainCarTrainEnv(Continuous_MountainCarEnv):
 		reward-= math.pow(action[0],2)*0.1
 
 		self.state = np.array([position, velocity, power])
+		self.goal_err = self._goal_error()
 		return self.state[0:2], reward, done, {}
 
 	def get_safe_error(self):
 		return 0.0
 
 	def get_goal_error(self):
+		return self.goal_err
+
+	def _goal_error(self):
 		position = self.state[0]
 		if position < self.goal_position:
 			return self.goal_position - position 

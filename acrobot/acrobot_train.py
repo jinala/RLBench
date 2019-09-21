@@ -81,16 +81,17 @@ class AcrobotTrainEnv(AcrobotEnv):
 		return self.dt 
 
 	def _dsdt(self, s_augmented, t):
-		m1 = self.LINK_MASS_1
-		m2 = self.LINK_MASS_2
-		l1 = self.LINK_LENGTH_1
-		lc1 = self.LINK_COM_POS_1
-		lc2 = self.LINK_COM_POS_2
-		I1 = self.LINK_MOI
-		I2 = self.LINK_MOI
+		
 		g = 9.8
 		a = s_augmented[-1]
 		s = s_augmented[:-1]
+		m1 = s[-2]
+		m2 = s[-1]
+		l1 = self.LINK_LENGTH_1
+		lc1 = self.LINK_COM_POS_1
+		lc2 = self.LINK_COM_POS_2
+		I1 = self.LINK_MOI * m1 
+		I2 = self.LINK_MOI * m2
 		theta1 = s[0]
 		theta2 = s[1]
 		dtheta1 = s[2]

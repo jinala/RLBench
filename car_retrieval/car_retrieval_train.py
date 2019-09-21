@@ -6,7 +6,7 @@ import numpy as np
 import gym
 from gym import spaces
 from gym.utils import seeding
-from gym.envs.classic_control import rendering
+#from gym.envs.classic_control import rendering
 
 from car_retrieval.collision import * 
 
@@ -40,6 +40,8 @@ class CarRetrievalTrainEnv(gym.Env):
 		self.observation_space = spaces.Box(low=self.low_state, high=self.high_state,
 											dtype=np.float32)
 
+		self.goal_err = 0
+
 		self.seed()
 		self.reset()
 
@@ -70,6 +72,8 @@ class CarRetrievalTrainEnv(gym.Env):
 
 		obs = self._obs()
 		obs = np.concatenate((obs, old_obs), axis = None)
+
+		self.goal_err = self._goal_error()
 
 		return obs, self._reward(), done, {}
 
@@ -175,6 +179,9 @@ class CarRetrievalTrainEnv(gym.Env):
 		return e1 + e2 
 
 	def get_goal_error(self):
+		return self.goal_err 
+		
+	def _goal_error(self):
 		x,y,ang, dist = self.state
 		error = 0
 		# error for x

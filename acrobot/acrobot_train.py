@@ -57,8 +57,9 @@ class AcrobotTrainEnv(AcrobotEnv):
 		ns[3] = bound(ns[3], -self.MAX_VEL_2, self.MAX_VEL_2)
 		self.state = ns
 		terminal = self._terminal()
-		reward = -1. if not terminal else 0.
 		self.goal_err = self._goal_error()
+		reward = -self.goal_err 
+		
 		return (self._get_ob(), reward, terminal, {})
 
 	def _get_ob(self):

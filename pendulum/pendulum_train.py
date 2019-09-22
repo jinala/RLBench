@@ -32,6 +32,7 @@ class PendulumTrainEnv(PendulumEnv):
 
 	def step(self,u):
 		th, thdot, mass = self.state # th := theta
+		prev_th = th 
 
 		g = self.g
 		m = mass
@@ -46,10 +47,11 @@ class PendulumTrainEnv(PendulumEnv):
 		newth = th + newthdot*dt
 		newthdot = np.clip(newthdot, -self.max_speed, self.max_speed) #pylint: disable=E1111
 
-		terminal = self._terminal()
-	   
 		self.state = np.array([newth, newthdot, mass])
+		terminal = self._terminal(prev_th)
 		self.goal_err = self._goal_error()
+		#if terminal:
+			#print(angle_normalize(newth), angle_normalize(prev_th))
 		return self._get_obs(), -costs, terminal, {}
 
 	def reset(self):
@@ -83,10 +85,11 @@ class PendulumTrainEnv(PendulumEnv):
 		theta, thetadot, mass = self.state
 		return np.array([np.cos(theta), np.sin(theta), thetadot])
 
-	def _terminal(self):
+	def _terminal(self, prev_th):
 		theta, thetadot, mass = self.state
 		th = angle_normalize(theta)
-		return bool(th < 0.05 and th > -0.05)
+		prev_th = angle_normalize(prev_th)
+		return bool((th < 0.05 and th > -0.05) or (abs(prev_th) < 0.2 and prev_th*th <= 0.0))
 
 	
 

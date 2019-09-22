@@ -15,8 +15,10 @@ class QuadTestEnv(QuadTrainEnv):
 		self.tunnel_y0_lim = (0.5, 7.5) # min, max
 		self.tunnel_y1_lim = (2.0, 10.0) 
 		self.tunnel_l_lim = (1.0, 1.0)
-		self.num_tunnels = 120
+		self.num_tunnels_min = 120
+		self.num_tunnels_max = 120 
 
+		self.num_tunnels = 120
 		self.x_offset = 3.0
 		self.x_start = 0.0
 
@@ -24,7 +26,7 @@ class QuadTestEnv(QuadTrainEnv):
 		self.y_lookout = 2.0
 		
 		
-		self.dt = 0.05
+		self.dt = 0.1
 		self.tol = 0.02
 		self.t_max = 0.8
 		self.t_min = -0.8

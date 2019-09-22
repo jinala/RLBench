@@ -9,7 +9,7 @@ register(
 
 register(
 	id="MountainCarTest-v0",
-	entry_point="mountain_car.mountian_car_test:MountainCarTestEnv",
+	entry_point="mountain_car.mountain_car_test:MountainCarTestEnv",
 	max_episode_steps=10000,
 )
 

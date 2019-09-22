@@ -20,8 +20,10 @@ class QuadTrainEnv(gym.Env):
 		self.tunnel_y0_lim = (0.5, 7.5) # min, max
 		self.tunnel_y1_lim = (2.0, 10.0) 
 		self.tunnel_l_lim = (1.0, 1.0)
-		self.num_tunnels = 60
+		self.num_tunnels_min = 60
+		self.num_tunnels_max = 60 
 
+		self.num_tunnels = 60
 		self.x_offset = 3.0
 		self.x_start = 0.0
 
@@ -29,7 +31,7 @@ class QuadTrainEnv(gym.Env):
 		self.y_lookout = 2.0
 		
 		
-		self.dt = 0.05
+		self.dt = 0.1
 		self.tol = 0.02
 		self.t_max = 0.8
 		self.t_min = -0.8
@@ -57,7 +59,7 @@ class QuadTrainEnv(gym.Env):
 
 	def step(self, action):
 		dt = self.dt
-		
+
 		action = np.clip(action, self.low_action, self.high_action)
 		ay = action[0]
 		ax = 0.0
@@ -82,6 +84,7 @@ class QuadTrainEnv(gym.Env):
 		return obs, self._reward(), done, {}
 
 	def reset(self):
+		self.num_tunnels = self.np_random.randint(self.num_tunnels_min, self.num_tunnels_max + 1)
 		x = self.x_start + self.x_offset + self.np_random.uniform(low = -0.04, high = 0.04)
 		y = 1.0
 		vx = 2.0 + self.np_random.uniform(low = -0.04, high = 0.04)
@@ -127,21 +130,26 @@ class QuadTrainEnv(gym.Env):
 		return np.array([x, y, vx, vy])
 
 	def _done(self):
+		e1 = self._check_collision()
+		e2 = self._check_copter() 
+
 		e = self._check_goal()
-		return e < 0.01
+		return e < 0.01 or (e1 + e2) > 0.02
 		
 	def _reward(self):
-		e1 = self._check_collision()
+		return 1.0
+
+		'''e1 = self._check_collision()
 		e2 = self._check_copter()
 
-		e3 = self._check_goal()
+		e3 = 0.0 #self._check_goal()
 
 		e4 = self._get_obj()
 
 		if e1 + e2 > 0.01:
 			return -e3 - e4 - 10.0
 		else:
-			return -e3 - e4
+			return -e3 - e4'''
 
 	def _check_collision(self):
 		x,y,_,_,t,_ = self.state[0:6]
@@ -241,7 +249,12 @@ class QuadTrainEnv(gym.Env):
 		e1 = self._check_collision()
 		e2 = self._check_copter()
 
-		return e1 + e2 
+		if e1 + e2 < 0.02:
+			return 0.0
+		else:
+			return e1 + e2 - 0.02
+
+		#return e1 + e2 
 
 	def get_goal_error(self):
 		return self.goal_err

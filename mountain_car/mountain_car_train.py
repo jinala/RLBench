@@ -82,7 +82,9 @@ class MountainCarTrainEnv(Continuous_MountainCarEnv):
 
 	def reset(self):
 		power = self.np_random.uniform(low = self.min_power, high = self.max_power)
-		self.state = np.array([self.np_random.uniform(low=-0.6-0.4, high=-0.6+0.4), 0, power])
+		pos = self.np_random.uniform(low=-0.6-0.04, high=-0.6+0.04)
+		vel = self.np_random.uniform(low=-0.04, high=0.04)
+		self.state = np.array([pos, vel, power])
 		return np.array(self.state)[0:2]
 
    

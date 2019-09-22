@@ -15,6 +15,9 @@ class QuadReactiveTestEnv(QuadReactiveTrainEnv):
 		self.tunnel_y0_lim = (0.5, 7.5) # min, max
 		self.tunnel_y1_lim = (2.0, 10.0) 
 		self.tunnel_l_lim = (1.0, 1.0)
+		self.num_tunnels_min = 80
+		self.num_tunnels_max = 80 
+
 		self.num_tunnels = 80
 
 		self.x_offset = 3.0

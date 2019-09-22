@@ -17,6 +17,9 @@ class QuadReactiveTrainEnv(QuadTrainEnv):
 		self.tunnel_y0_lim = (0.5, 7.5) # min, max
 		self.tunnel_y1_lim = (2.0, 10.0) 
 		self.tunnel_l_lim = (1.0, 1.0)
+		self.num_tunnels_min = 40
+		self.num_tunnels_max = 40 
+
 		self.num_tunnels = 40
 
 		self.x_offset = 3.0
@@ -26,7 +29,7 @@ class QuadReactiveTrainEnv(QuadTrainEnv):
 		self.y_lookout = 0.6
 		
 		
-		self.dt = 0.05
+		self.dt = 0.1
 		self.tol = 0.02
 		self.t_max = 0.8
 		self.t_min = -0.8
@@ -49,6 +52,8 @@ class QuadReactiveTrainEnv(QuadTrainEnv):
 	
 
 	def reset(self):
+		self.num_tunnels = self.np_random.randint(self.num_tunnels_min, self.num_tunnels_max + 1)
+
 		x = self.x_start + self.x_offset + self.np_random.uniform(low = -0.04, high = 0.04)
 		y = 1.0
 		vx = 2.0 + self.np_random.uniform(low = -0.04, high = 0.04)

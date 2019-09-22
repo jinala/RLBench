@@ -10,7 +10,7 @@ register(
 
 register(
 	id="CartPoleTest-v0",
-	entry_point="cartpole.cartpole_train:CartPoleTrainEnv",
+	entry_point="cartpole.cartpole_test:CartPoleTestEnv",
 	max_episode_steps=15000,
     reward_threshold=15000,
 )

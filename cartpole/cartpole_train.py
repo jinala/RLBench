@@ -41,6 +41,8 @@ class CartPoleTrainEnv(CartPoleEnv):
 		self.viewer = None
 		self.state = None
 
+		self.safe_error = 0.0
+
 		self.steps_beyond_done = None
 
 
@@ -69,6 +71,10 @@ class CartPoleTrainEnv(CartPoleEnv):
 		done =  theta < -self.theta_threshold_radians \
 				or theta > self.theta_threshold_radians
 		done = bool(done)
+		if done:
+			self.safe_error = 1.0
+		else:
+			self.safe_error = 0.0
 
 		if not done:
 			reward = 1.0
@@ -85,14 +91,7 @@ class CartPoleTrainEnv(CartPoleEnv):
 		return np.array(self.state), reward, done, {}
 
 	def get_safe_error(self):
-		x, x_dot, theta, theta_dot = self.state
-		err = 0.0
-		if theta < -self.theta_threshold_radians:
-			err += -self.theta_threshold_radians - theta 
-		if theta > self.theta_threshold_radians:
-			err += theta - self.theta_threshold_radians
-
-		return err 
+		return self.safe_error
 
 	def get_goal_error(self):
 		return 0.0

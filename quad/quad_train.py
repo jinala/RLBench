@@ -5,7 +5,7 @@ import numpy as np
 import gym
 from gym import spaces
 from gym.utils import seeding
-from gym.envs.classic_control import rendering
+#from gym.envs.classic_control import rendering
 
 from quad.quad_collision import * 
 
